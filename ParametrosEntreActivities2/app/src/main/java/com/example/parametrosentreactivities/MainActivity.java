@@ -12,6 +12,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.parametrosentreactivities.beans.Usuario;
+import com.example.parametrosentreactivities.datos.SeasData;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button btnEnviar;
@@ -29,7 +32,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent navegarEntrePantallas = new Intent(getBaseContext(), MainActivity2.class);
-                navegarEntrePantallas.putExtra("USUARIO", edtUser.getText().toString());
+
+                Usuario miUsuario = new Usuario();
+                miUsuario.setEmail(edtUser.getText().toString());
+
+                SeasData.setUsuario(miUsuario);
                 startActivity(navegarEntrePantallas);
             }
         });

@@ -3,6 +3,8 @@ package com.example.parametrosentreactivities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import com.example.parametrosentreactivities.beans.Usuario;
+import com.example.parametrosentreactivities.datos.SeasData;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,9 +30,10 @@ public class MainActivity2 extends AppCompatActivity {
 
         txtUser = findViewById(R.id.txtUserPantalla2);
 
-        Bundle variables = getIntent().getExtras();
-        String user = variables.getString("USUARIO");
+        //Bundle variables = getIntent().getExtras();
+        //String user = variables.getString("USUARIO");
+        //Usuario usuario = (Usuario) variables.getSerializable("USUARIO");
 
-        txtUser.setText(user);
+        txtUser.setText(SeasData.getUsuario().getEmail());
     }
 }
