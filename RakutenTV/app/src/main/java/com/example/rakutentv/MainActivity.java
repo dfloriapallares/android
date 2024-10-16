@@ -56,7 +56,7 @@ public class MainActivity
 
             }
         });
-    }
+    }   
     /*Sugerencia: Butterknife Android*/
     private void initComponents(){
         edtUser = (EditText) findViewById(R.id.edtUser);
