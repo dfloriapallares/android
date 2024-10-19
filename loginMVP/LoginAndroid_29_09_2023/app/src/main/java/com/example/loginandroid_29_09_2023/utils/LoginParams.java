@@ -1,27 +1,28 @@
 package com.example.loginandroid_29_09_2023.utils;
 
 public class LoginParams {
-    private String email;
-    private String password;
+    private String correo;
+    private String contraseña;
 
-    public LoginParams(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public LoginParams(String correo, String contraseña) {
+        this.correo = correo;
+        this.contraseña = contraseña;
     }
 
-    public String getEmail() {
-        return email;
+    // Getters y setters
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
-    public String getPassword() {
-        return password;
+    public String getContraseña() {
+        return contraseña;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
     }
 }

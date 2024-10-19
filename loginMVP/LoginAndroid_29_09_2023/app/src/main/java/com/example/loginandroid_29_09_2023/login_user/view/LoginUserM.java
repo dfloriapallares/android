@@ -43,24 +43,34 @@ public class LoginUserM extends AppCompatActivity implements ContractLoginUser.V
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(mainActivity, message, Toast.LENGTH_SHORT).show();
-                //sPeliculas.getDatosPeliculas();
-                User user = new User("", "", "");
-                //user.se("akkarihdez@gmail.com");
-                user.setPassword("1234");
-                presenter.login(user);
+                String email = edtEmail.getText().toString().trim();
+                String password = edtPassword.getText().toString().trim();
+
+                if (email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(mainActivity, "Por favor, ingresa un correo y contraseña", Toast.LENGTH_SHORT).show();
+                } else {
+                    User user = new User("", email, password);
+                    Toast.makeText(mainActivity, user.getPassword() + user.getEmail(), Toast.LENGTH_LONG);
+                    presenter.login(user);
+                }
             }
         });
+
     }
 
 
     @Override
     public void successLogin(User user) {
-        Toast.makeText(mainActivity, user.getPassword(), Toast.LENGTH_SHORT).show();
+        String message = (user.getPassword() != null && !user.getPassword().isEmpty())
+                ? user.getPassword()
+                : "Inicio de sesión exitoso";
+        Toast.makeText(mainActivity, message, Toast.LENGTH_SHORT).show();
     }
+
 
     @Override
     public void failureLogin(String err) {
-
+        Toast.makeText(mainActivity, err, Toast.LENGTH_SHORT).show();
     }
+
 }

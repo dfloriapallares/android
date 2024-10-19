@@ -19,7 +19,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginUserModel implements ContractLoginUser.Model {
-     private static final String IP_BASE = "192.168.104.50:3000";
+     private static final String IP_BASE = "10.0.2.2:3000";
     //private static final String IP_BASE = "127.0.0.1:3000";
     private LoginUserPresenter presenter;
     public LoginUserModel(LoginUserPresenter presenter){
@@ -30,53 +30,56 @@ public class LoginUserModel implements ContractLoginUser.Model {
     @Override
     public void loginAPI(User user, final OnLoginUserListener onLoginUserListener) {
         // Crear una instancia de ApiService
-        ApiService apiService = RetrofitCliente.getClient("http://" + IP_BASE + "").
+        ApiService apiService = RetrofitCliente.getClient("http://" + IP_BASE).
                 create(ApiService.class);
 
-// Realizar la solicitud al Servlet
-        // Call<MyData> call = apiService.getMyData("1");
-        LoginParams loginParams = new LoginParams("prueba@example.com",
-                            "password1");
-                /*
-                {
-                      "email": "prueba@example.com",
-                      "password": "password1"
-                    }
-                * */
+        // Verificar que los valores de user no estén vacíos o null
+        if (user.getEmail() == null || user.getEmail().isEmpty() || user.getPassword() == null || user.getPassword().isEmpty()) {
+            onLoginUserListener.onFailure("Correo o contraseña vacíos");
+            return;
+        }
+
+        // Crear el objeto LoginParams con los valores correctos
+        LoginParams loginParams = new LoginParams(user.getEmail(), user.getPassword());
+
+        // Log para verificar el objeto LoginParams
+        Log.d("LoginUserModel", "Datos de LoginParams: " + loginParams.getCorreo() + " / " + loginParams.getContraseña());
+
+        // Realizar la solicitud al servidor
         Call<ApiResponse> call = apiService.login(loginParams);
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
-                if (response.isSuccessful()) {
-                    // Procesar la respuesta aquí
-                    ApiResponse myData = response.body();
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse apiResponse = response.body();
 
-                    //String message = myData.getMessage();
-
-                    ArrayList<User> lstUsers = myData.getLstUsers();
-
-                    onLoginUserListener.onFinished(lstUsers.get(0));
-
-                    // Actualizar la interfaz de usuario con el mensaje recibido
+                    if (apiResponse.getLstUsers() != null && !apiResponse.getLstUsers().isEmpty()) {
+                        onLoginUserListener.onFinished(apiResponse.getLstUsers().get(0));
+                    } else {
+                        onLoginUserListener.onFailure("Credenciales incorrectas");
+                    }
                 } else {
-                    // Manejar una respuesta no exitosa
-                    // Manejar una respuesta no exitosa
                     Log.e("Response Error", "Código de estado HTTP: " + response.code());
                     try {
                         String errorBody = response.errorBody().string();
                         Log.e("Response Error", "Cuerpo de error: " + errorBody);
+                        onLoginUserListener.onFailure("Error en la respuesta del servidor: " + response.code() + " - " + errorBody);
                     } catch (IOException e) {
                         e.printStackTrace();
+                        onLoginUserListener.onFailure("Error en la respuesta del servidor");
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                // Manejar errores de red o del servidor
-                Log.e("Response Error", "Cuerpo de error: " + t.getMessage());
+                Log.e("LoginUserModel", "Error de conexión: " + t.getMessage());
+                onLoginUserListener.onFailure("Error de conexión: " + t.getMessage());
             }
         });
     }
-    }
+
+}
+
+
 
